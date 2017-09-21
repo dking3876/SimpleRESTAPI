@@ -13,7 +13,7 @@ $config = array(
         "username"  => "",
         "password"  => ""
     ),
-    "base"  => "/api/",
+    "base"  => "/api/v2/",
     "paths" => array()
 );
 
