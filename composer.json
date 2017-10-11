@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "dking3876\\SimpleRESTAPI\\": "src/"
+            "SimpleRESTAPI\\": "src/"
         }
     }
 }

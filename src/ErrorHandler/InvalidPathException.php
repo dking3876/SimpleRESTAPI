@@ -1,5 +1,5 @@
 <?php
-namespace dking3876\SimpleRESTAPI\ErrorHandler;
+namespace SimpleRESTAPI\ErrorHandler;
 class InvalidPathException extends \Exception{
     
     /**
