@@ -3,7 +3,6 @@
     "description": "A Restful api",
     "license": "MIT",
     "keywords": ["api"],
-    "version": "1.0.2-beta",
     "authors": [
         {
             "name": "Deryk King",
