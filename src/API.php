@@ -1,10 +1,10 @@
 <?php
-namespace dking3876\SimpleRESTAPI;
-use dking3876\SimpleRESTAPI\ErrorHandler\Error;
-use dking3876\SimpleRESTAPI\ErrorHandler\InvalidPathException;
-use dking3876\SimpleRESTAPI\ErrorHandler\InvalidCallBack;
-use dking3876\SimpleRESTAPI\AutoMapper;
-use dking3876\SimpleRESTAPI\Resolver;
+namespace SimpleRESTAPI;
+use SimpleRESTAPI\ErrorHandler\Error;
+use SimpleRESTAPI\ErrorHandler\InvalidPathException;
+use SimpleRESTAPI\ErrorHandler\InvalidCallBack;
+use SimpleRESTAPI\AutoMapper;
+use SimpleRESTAPI\Resolver;
 
 /**
  * API Class

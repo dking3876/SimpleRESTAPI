@@ -1,5 +1,5 @@
 <?php
-namespace dking3876\SimpleRESTAPI;
+namespace SimpleRESTAPI;
 
 class AutoMapper{
     private $mappedProperties;

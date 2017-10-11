@@ -1,5 +1,5 @@
 <?php
-namespace dking3876\SimpleRESTAPI\ErrorHandler;
+namespace SimpleRESTAPI\ErrorHandler;
 /**
  * Error Handler
  * @todo Turn this into a singleton to be used statiically so i can just add errors on and log them somewhere 

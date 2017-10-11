@@ -1,5 +1,5 @@
 <?php
-namespace dking3876\SimpleRESTAPI;
+namespace SimpleRESTAPI;
 /**
  * Class to instantiate class objects with DI
  * class arguments must be typehinted 
