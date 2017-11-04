@@ -6,6 +6,7 @@ class test_socket_controller{
      * @var ClientConnection[]
      */
     public static $s_clients = [];
+    public static $receivedEvents = [];
     public function __construct(){
         print "instantiated the class";
     }
@@ -15,18 +16,28 @@ class test_socket_controller{
             //do stuff for the client on their tick
 
             //read received events and transmit to the client
-            print static::$s_clients[$clientId]->received."\n";
+            // print static::$s_clients[$clientId]->received."\n";
         }
         foreach(static::$s_clients as $client){
-            var_dump($client);
-            $socket->wsSend($client->ID, "right back at you number " . $client->ID);
+            // var_dump($client);
+            // $socket->wsSend($client->ID, "right back at you number " . $client->ID);
         }
     }
     public function testOpen(\SimpleRESTAPI\WebSocket $socket, $clientId){
         static::$s_clients[$clientId] = new \Test\testing\ClientConnection($clientId);
     }
-    public function testMessage(\SimpleRESTAPI\WebSocket $socket, $clientId, $data, $dataLength, $opcode){
-       static::$s_clients[$clientId]->received = $data;
+    public function testMessage(\SimpleRESTAPI\WebSocket $socket, $clientId, $data, $dataLength){
+    //    static::$s_clients[$clientId]->received = $data;
+        print $data."/n";
+        print $dataLength."/n";
+        // var_dump($opcode);
+        $data = json_decode( $data, true );
+        foreach(static::$s_clients as $client){
+            if($client->ID == $clientId){
+                continue;
+            }
+            $socket->wsSend($client->ID, $data['message']);
+        }
     }
     public function testClose(\SimpleRESTAPI\WebSocket $socket, $clientId, $status){
         print "goodbye \n";
