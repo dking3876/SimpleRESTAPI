@@ -5,7 +5,7 @@ use SimpleRESTAPI\ErrorHandler\InvalidPathException;
 use SimpleRESTAPI\ErrorHandler\InvalidCallBack;
 use SimpleRESTAPI\AutoMapper;
 use SimpleRESTAPI\Resolver;
-
+use SimpleRESTAPI\WebSocket;
 /**
  * API Class
  * @author Deryk W. King <dking3876@gmail.com>
@@ -104,6 +104,7 @@ class API{
      *
      * @param array $config
      */
+    static $SOCKET;
     public function __construct($config){
         $this->config = array_merge($this->default_config, $config);
         self::$DBCreds = (object)$this->config['connection'];
@@ -116,6 +117,16 @@ class API{
             );
         $this->parse_data();
         $this->endpoints = $config['paths'];
+        if($config['socket']){
+            $this->startWebSocket();
+        }
+    }
+
+    public function startWebSocket(){
+        self::$SOCKET = new WebSocket();
+
+        self::$SOCKET->wsStartServer($this->config['socket']['host'], $this->config['socket']['port']);
+
     }
     /**
      * Parse the Data passed to the api
