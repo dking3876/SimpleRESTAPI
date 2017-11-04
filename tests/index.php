@@ -18,10 +18,10 @@ $config = array(
         "host"  => "127.0.0.1",
         "port"  => "9002",
         "events"    => [
-            "onOpen"  => "",
-            "onMessage"   => "",
-            "onTick"    => "", //This is the loop
-            "onClose"     => ""
+            "onOpen"  =>array('Test\\testing\\test_socket_controller', 'testOpen'), //when a new connection is opened from the client
+            "onMessage"   => array('Test\\testing\\test_socket_controller', 'testMessage'), //When a new message is received from the client
+            "onTick"    => array('Test\\testing\\test_socket_controller', 'testTick'), //This is the loop
+            "onClose"     => array('Test\\testing\\test_socket_controller', 'testClose') //when a client closes the connection
         ]
     ]
 );

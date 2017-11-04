@@ -183,7 +183,7 @@ class WebSocket
 
 		return true; // returned when wsStopServer() is called
 	}
-	function wsStopServer() {
+	protected function wsStopServer() {
 		// check if server is not running
 		if (!isset($this->wsRead[0])) return false;
 
@@ -209,7 +209,7 @@ class WebSocket
 	}
 
 	// client timeout functions
-	function wsCheckIdleClients() {
+	private function wsCheckIdleClients() {
 		$time = time();
 		foreach ($this->wsClients as $clientID => $client) {
 			if ($client[2] != self::WS_READY_STATE_CLOSED) {
@@ -239,7 +239,7 @@ class WebSocket
 	}
 
 	// client existence functions
-	function wsAddClient($socket, $clientIP) {
+	private function wsAddClient($socket, $clientIP) {
 		// increase amount of clients connected
 		$this->wsClientCount++;
 
@@ -260,13 +260,13 @@ class WebSocket
 		// store socket - used for socket_select()
 		$this->wsRead[$clientID] = $socket;
 	}
-	function wsRemoveClient($clientID) {
+	private function wsRemoveClient($clientID) {
 		// fetch close status (which could be false), and call wsOnClose
 		$closeStatus = $this->wsClients[$clientID][5];
 		if ( array_key_exists('onClose', $this->wsOnEvents) )
 			foreach ( $this->wsOnEvents['onClose'] as $func )
                 // $func($clientID, $closeStatus);
-                \call_user_func($func, $closeStatus);
+                \call_user_func_array($func, [$this,$clientID, $closeStatus]);
 
 		// close socket
 		$socket = $this->wsClients[$clientID][0];
@@ -289,17 +289,17 @@ class WebSocket
 	}
 
 	// client data functions
-	function wsGetNextClientID() {
+	private function wsGetNextClientID() {
 		$i = 1; // starts at 1 because 0 is the listen socket
 		while (isset($this->wsRead[$i])) $i++;
 		return $i;
 	}
-	function wsGetClientSocket($clientID) {
+	public function wsGetClientSocket($clientID) {
 		return $this->wsClients[$clientID][0];
 	}
 
 	// client read functions
-	function wsProcessClient($clientID, &$buffer, $bufferLength) {
+	private function wsProcessClient($clientID, &$buffer, $bufferLength) {
 		if ($this->wsClients[$clientID][2] == self::WS_READY_STATE_OPEN) {
 			// handshake completed
 			$result = $this->wsBuildClientFrame($clientID, $buffer, $bufferLength);
@@ -310,7 +310,7 @@ class WebSocket
 			if ( array_key_exists('onTick', $this->wsOnEvents) )
 					foreach ( $this->wsOnEvents['onTick'] as $func )
                         // $func($clientID);
-                        \call_user_func($func, $clientID);
+                        \call_user_func_array($func, [$this,$clientID]);
 			
 		}
 		elseif ($this->wsClients[$clientID][2] == self::WS_READY_STATE_CONNECTING) {
@@ -321,8 +321,8 @@ class WebSocket
 
 				if ( array_key_exists('onOpen', $this->wsOnEvents) )
 					foreach ( $this->wsOnEvents['onOpen'] as $func )
-                        // $func($clientID);
-                        \call_user_func($func, $clientID);
+						// $func($clientID);
+                        \call_user_func_array($func, [$this,$clientID]);
 			}
 		}
 		else {
@@ -332,7 +332,7 @@ class WebSocket
 
 		return $result;
 	}
-	function wsBuildClientFrame($clientID, &$buffer, $bufferLength) {
+	private function wsBuildClientFrame($clientID, &$buffer, $bufferLength) {
 		// increase number of bytes read for the frame, and join buffer onto end of the frame buffer
 		$this->wsClients[$clientID][8] += $bufferLength;
 		$this->wsClients[$clientID][9] .= $buffer;
@@ -373,7 +373,7 @@ class WebSocket
 
 		return true;
 	}
-	function wsCheckSizeClientFrame($clientID) {
+	private function wsCheckSizeClientFrame($clientID) {
 		// check if at least 2 bytes have been stored in the frame buffer
 		if ($this->wsClients[$clientID][8] > 1) {
 			// fetch payload length in byte 2, max will be 127
@@ -450,7 +450,7 @@ class WebSocket
 
 		return false;
 	}
-	function wsProcessClientFrame($clientID) {
+	private function wsProcessClientFrame($clientID) {
 		// store the time that data was last received from the client
 		$this->wsClients[$clientID][3] = time();
 
@@ -550,7 +550,7 @@ class WebSocket
 
 		return true;
 	}
-	function wsProcessClientMessage($clientID, $opcode, &$data, $dataLength) {
+	private function wsProcessClientMessage($clientID, $opcode, &$data, $dataLength) {
 		// check opcodes
 		if ($opcode == self::WS_OPCODE_PING) {
 			// received ping message
@@ -589,7 +589,7 @@ class WebSocket
 			if ( array_key_exists('onMessage', $this->wsOnEvents) )
 				foreach ( $this->wsOnEvents['onMessage'] as $func )
                     // $func($clientID, $data, $dataLength, $opcode == self::WS_OPCODE_BINARY);
-                    \call_user_func($func,  $data, $dataLength, $opcode == self::WS_OPCODE_BINARY);
+                    \call_user_func_array($func,  [$this,$clientID, $data, $dataLength, $opcode == self::WS_OPCODE_BINARY]);
 		}
 		else {
 			// unknown opcode
@@ -598,7 +598,7 @@ class WebSocket
 
 		return true;
 	}
-	function wsProcessClientHandshake($clientID, &$buffer) {
+	private function wsProcessClientHandshake($clientID, &$buffer) {
 		print "process handshake \n";
 		// fetch headers and request line
 		$sep = strpos($buffer, "\r\n\r\n");
@@ -671,7 +671,7 @@ class WebSocket
 	}
 
 	// client write functions
-	function wsSendClientMessage($clientID, $opcode, $message) {
+	private function wsSendClientMessage($clientID, $opcode, $message) {
 		// check if client ready state is already closing or closed
 		if ($this->wsClients[$clientID][2] == self::WS_READY_STATE_CLOSING || $this->wsClients[$clientID][2] == self::WS_READY_STATE_CLOSED) return true;
 
@@ -733,7 +733,7 @@ class WebSocket
 
 		return true;
 	}
-	function wsSendClientClose($clientID, $status=false) {
+	private function wsSendClientClose($clientID, $status=false) {
 		// check if client ready state is already closing or closed
 		if ($this->wsClients[$clientID][2] == self::WS_READY_STATE_CLOSING || $this->wsClients[$clientID][2] == self::WS_READY_STATE_CLOSED) return true;
 

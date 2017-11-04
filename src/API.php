@@ -109,24 +109,40 @@ class API{
         $this->config = array_merge($this->default_config, $config);
         self::$DBCreds = (object)$this->config['connection'];
         unset($this->config['connection']);
-        $this->verb = $_SERVER['REQUEST_METHOD'];
-        $this->uri = str_replace(
-                $this->config['base'], 
-                "", 
-                $_SERVER['REQUEST_URI']
-            );
-        $this->parse_data();
-        $this->endpoints = $config['paths'];
-        if($config['socket']){
-            $this->startWebSocket();
+        if(!isset($_SERVER['REQUEST_METHOD'])){
+            if($config['socket']){
+                $this->startWebSocket();
+            }
+        }else{
+            $this->verb = $_SERVER['REQUEST_METHOD'];
+            $this->uri = str_replace(
+                    $this->config['base'], 
+                    "", 
+                    $_SERVER['REQUEST_URI']
+                );
+            $this->parse_data();
+            $this->endpoints = $config['paths'];
         }
     }
 
     public function startWebSocket(){
         self::$SOCKET = new WebSocket();
 
+        if($this->config['socket']['events']['onOpen']){
+            self::$SOCKET->bind('onOpen',$this->config['socket']['events']['onOpen']);
+        }
+        if($this->config['socket']['events']['onMessage']){
+            self::$SOCKET->bind('onMessage',$this->config['socket']['events']['onMessage']);
+        }
+        if($this->config['socket']['events']['onTick']){
+           self::$SOCKET->bind('onTick',$this->config['socket']['events']['onTick']);
+        }
+        if($this->config['socket']['events']['onClose']){
+            self::$SOCKET->bind('onClose',$this->config['socket']['events']['onClose']);
+        }
+        
         self::$SOCKET->wsStartServer($this->config['socket']['host'], $this->config['socket']['port']);
-
+        
     }
     /**
      * Parse the Data passed to the api
