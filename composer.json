@@ -9,7 +9,9 @@
             "email": "dking3876@msn.com"
         }
     ],
-    "require": {},
+    "require": {
+        "auth0/auth0-php": "^5.0"
+    },
     "require-dev": {
         "phpunit/phpunit": "4.0.*"
     },
