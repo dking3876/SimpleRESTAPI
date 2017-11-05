@@ -1,0 +1,12 @@
+{
+    "name": "derykk/tests",
+    "authors": [
+        {
+            "name": "dking3876",
+            "email": "dking3876@msn.com"
+        }
+    ],
+    "require": {
+        "dking3876/simple-rest-api": "@dev"
+    }
+}
