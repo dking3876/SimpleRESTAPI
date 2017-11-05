@@ -86,12 +86,35 @@ $config = array(
 );
 ```
 #### Paths
+Paths are an array of path arrays defined to know how to route the request. A path definition consists of:
+- path: the defined path using regex. Some examples are provided below
+            
+            'path'  => '^projects/?$`
+            'path' => '^projects/(?P<project_id>[^/]*)/?$`
+
+    You can define paths using [named subpatterns for path regex definitions](https://www.regular-expressions.info/named.html)
+- Request Method and callable function: This defintion provideds the function to call for the matchedd request method.  The callable can be any of the following examples.  
+
+            'GET'       => function($params, $tokens){}
+            'HEAD'      => $myNamedFunction
+            'POST'      => 'MyNameSpace\\MyClass::$myStaticMethod'
+            'PATCH'     => array('MyNameSpace\MyClass', 'myMethod')
+            'PUT'       => array($myInstantiatedObject, 'myMethod')
+            'DELETE'    => ($params, $tokens)=>{}
+
+An array of GET,POST parameters is passed as the first argument to your function. An array of url Tokens ((?P<project_id>[^/]*) would equate to $tokens['project_id'])
 
 ### Main Script
+Once you have set up your configuration array simply pass the configuration as the argument for the constructor of the api.
 ```php
+$config = [
+    'connection'    => ...
+    ...
+    'paths' => array(...)
+]
 $loader = require __DIR__.'/../vendor/autoload.php';
 $api = new SimpleRESTAPI\API($config);
 
 $api->router();
-echo json_encode($api->response());
+echo json_encode($api->response()); //used to encode the response to json.
 ```
