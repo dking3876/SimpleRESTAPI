@@ -128,16 +128,22 @@ class API{
     public function startWebSocket(){
         self::$SOCKET = new WebSocket();
 
-        if($this->config['socket']['events']['onOpen']){
+        if( isset($this->config['socket']['events']['onOpen']) ){
             self::$SOCKET->bind('onOpen',$this->config['socket']['events']['onOpen']);
         }
-        if($this->config['socket']['events']['onMessage']){
+        if( isset($this->config['socket']['events']['onMessage']) ){
             self::$SOCKET->bind('onMessage',$this->config['socket']['events']['onMessage']);
         }
-        if($this->config['socket']['events']['onTick']){
+        if( isset($this->config['socket']['events']['onMasterTick']) ){
+            self::$SOCKET->bind('onMasterTick',$this->config['socket']['events']['onMasterTick']);
+        }
+        if( isset($this->config['socket']['events']['onTick']) ){
            self::$SOCKET->bind('onTick',$this->config['socket']['events']['onTick']);
         }
-        if($this->config['socket']['events']['onClose']){
+        if( isset($this->config['socket']['events']['onClientTick']) ){
+            self::$SOCKET->bind('onTick',$this->config['socket']['events']['onClientTick']);
+         }
+        if( isset($this->config['socket']['events']['onClose']) ){
             self::$SOCKET->bind('onClose',$this->config['socket']['events']['onClose']);
         }
         
