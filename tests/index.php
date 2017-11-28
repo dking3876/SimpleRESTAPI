@@ -20,7 +20,8 @@ $config = array(
         "events"    => [
             "onOpen"  =>array('Test\\testing\\test_socket_controller', 'testOpen'), //when a new connection is opened from the client
             "onMessage"   => array('Test\\testing\\test_socket_controller', 'testMessage'), //When a new message is received from the client
-            "onTick"    => array('Test\\testing\\test_socket_controller', 'testTick'), //This is the loop
+            "onMasterTick"  => array('Test\\testing\test_socket_controller', 'masterTestTick'), // this is the master loop 
+            "onTick"    => array('Test\\testing\\test_socket_controller', 'testTick'), //This is the loop fired for each connected client. fires once per client in the master loop
             "onClose"     => array('Test\\testing\\test_socket_controller', 'testClose') //when a client closes the connection
         ]
     ]

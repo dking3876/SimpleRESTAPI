@@ -126,6 +126,12 @@ class WebSocket
 
 		$nextPingCheck = time() + 1;
 		while (isset($this->wsRead[0])) {
+
+			if ( array_key_exists('onMasterTick', $this->wsOnEvents) )
+			foreach ( $this->wsOnEvents['onMasterTick'] as $func )
+                // $func($clientID, $closeStatus);
+				\call_user_func_array($func, [$this]);
+				
 			$changed = $this->wsRead;
 			$result = socket_select($changed, $write, $except, 1);
 
