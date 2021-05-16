@@ -358,21 +358,12 @@ class API{
     function response(){
         if($this->verb == "OPTIONS"){
             header("HTTP/1.0 200");
-        }else
-        // if(!$this->response){
-        //     header("HTTP/1.0 404 Not Found");
-        //     return array(
-        //         "error" => $this->errors,
-        //         "trace" => Error::$errors
-        //     );
-        // }else
-        //  if(isset($this->response['error'])){
-        if(Error::$errors){
+        }else if(Error::$errors){
             header("HTTP/1.0 404 Not Found");
             return array(
                 'errors'    => Error::$errors
             );
-        }else if(isset($this->response['code'])){
+        }else if(is_array($this->response) && isset($this->response['code'])){
             $this->set_headers($this->response['code']);
             return array(
                 'message'    => $this->response['body']
