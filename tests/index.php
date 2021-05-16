@@ -34,6 +34,25 @@ $paths[] = array(
     'GET'   => array('Test\testing\test_controller', 'helloWorld'), 
     'POST'   => array('Test\testing\test_controller', 'goodbyeWorld')
 );
+$paths[] = array(
+    'path'  => '^middlefunctiontest/?$', 
+    'GET'   => array('Test\testing\test_controller', 'helloWorld'), 
+    'POST'   => array('Test\testing\test_controller', 'goodbyeWorld'),
+    'middleware'    => function($tokens, $other,API $restapi){
+        echo 'middlware execution achieved';
+    }
+);
+$paths[] = array( 
+    'path'  => '^classcall/?$',
+    'GET'   => array(\Test\testing\test_controller::Class, 'helloWorld')
+);
+// $config['middleware'] = [];
+// $congig['middleware'][] = array(
+//     'paths' => array(
+        
+//     ),
+//     'method'
+// )
 $config['paths'] = $paths;
 $api = new API($config);
 

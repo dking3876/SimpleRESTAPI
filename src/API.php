@@ -105,6 +105,14 @@ class API{
      * @param array $config
      */
     static $SOCKET;
+    /**
+     * Holds array of middleware for specific paths. paths are the keys with an array of verbs and middleware are the properties
+     * array('projects' => array( verb => array(myClass::Class, mymethod)));
+     *
+     * @var array
+     */
+    public $middleware = [];
+
     public function __construct($config){
         $this->config = array_merge($this->default_config, $config);
         self::$DBCreds = (object)$this->config['connection'];
@@ -122,6 +130,13 @@ class API{
                 );
             $this->parse_data();
             $this->endpoints = $config['paths'];
+            if(isset($this->config['middleware'])){
+                if(isset($this->config['middleware']['paths'])){
+                    // foreach($this->config['middleware']['paths'] as $){
+                    //     $this->middleware
+                    // }
+                }
+            }
         }
     }
 
@@ -280,6 +295,15 @@ class API{
                             list($class, $method) = $endpoint[$this->verb];
                             $_class = $this->resolve($class);
                             $endpoint[$this->verb][0] = $_class;
+                        }
+                        if(isset($endpoint['middleware'])){
+                            if( is_array($endpoint['middleware']) && !is_object($endpoint['middleware'][0]) ){
+                            
+                                list($middlewareClass, $middlewareMethod) = $endpoint['middleware'];
+                                $_middlewareClass = $this->resolve($middlewareClass);
+                                $endpoint['middleware'][0] = $_middlewareClass;
+                            }
+                            call_user_func_array($endpoint['middleware'], array($parameters['parameters'],$parameters['url_tokens'], $this));
                         }
                         $this->response = call_user_func_array($endpoint[$this->verb], array($parameters['parameters'],$parameters['url_tokens'], $this));
                     }else{
