@@ -9,7 +9,7 @@ class InvalidCallBack extends \Exception{
  * @param integer $code
  * @param Exception $previous
  */
-public function __construct($errorData, $code = 0, Exception $previous = null) {
+public function __construct($errorData, $code = 0, ?\Exception $previous = null) {
     parent::__construct("", $code, $previous);
     list($endpoint, $verb) = $errorData;
     if(isset($endpoint[$verb])){
