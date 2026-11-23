@@ -33,8 +33,17 @@ class API{
      * Holds the reponse to return to the client
      *
      * @var array/object
-     */ 
+     */
     private $response;
+    // Declared explicitly: dynamic properties are deprecated since PHP 8.2.
+    /** @var array merged configuration */
+    public $config;
+    /** @var string request URI with the base path removed */
+    public $uri;
+    /** @var mixed raw (non-JSON) request body */
+    public $alt;
+    /** @var string|null last routing error message */
+    public $error;
     /**
      * Last Error to return to the client 
      *

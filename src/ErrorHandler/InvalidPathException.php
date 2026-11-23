@@ -9,7 +9,7 @@ class InvalidPathException extends \Exception{
      * @param integer $code
      * @param Exception $previous
      */
-    public function __construct($path, $code = 0, Exception $previous = null) {
+    public function __construct($path, $code = 0, ?\Exception $previous = null) {
         
         parent::__construct("Invalid Path provided: '".$path."'", $code, $previous);
     }

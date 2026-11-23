@@ -48,15 +48,16 @@ class Resolver {
 		
 		foreach($parameters as $parameter)
 		{
-			$dependency = $parameter->getClass();
-			
-			if(is_null($dependency))
+			// ReflectionParameter::getClass() is deprecated since PHP 8.0; getType() works from PHP 7.1.
+			$parameterType = $parameter->getType();
+
+			if(!($parameterType instanceof \ReflectionNamedType) || $parameterType->isBuiltin())
 			{
 				$dependencies[] = $this->resolveNonClass($parameter);
 			}
 			else
 			{
-				$dependencies[] = $this->resolve($dependency->name);
+				$dependencies[] = $this->resolve($parameterType->getName());
 			}
 		}
 		
